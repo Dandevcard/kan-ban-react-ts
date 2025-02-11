@@ -1,44 +1,22 @@
 import { Badge, Flex, Grid, ScrollArea } from "@radix-ui/themes";
 import { Task } from "../entities/Tasks";
 import { TaskCard } from "./TaskCard";
+import { useTasks } from "../hooks/UseTasks";
 
 export const TaskBoard: React.FC = () => {
-  const tasksTodo: Task[] = [
-    {
-      id: 2,
-      title: "Reunião com a equipe",
-      description:
-        "Reunião para discutir o progresso do projeto e próximos passos.",
-      status: "todo",
-      priority: "high",
-    },
-  ];
-  const tasksInProgress: Task[] = [
-    {
-      id: 1,
-      title: "Enviar relatório",
-      description: "Enviar o relatório mensal para o departamento financeiro.",
-      status: "doing",
-      priority: "low",
-    },
-  ];
-  const tasksDone: Task[] = [
-    {
-      id: 3,
-      title: "Atualizar o site",
-      description:
-        "Fazer atualizações no site da empresa com novas informações.",
-      status: "done",
-      priority: "medium",
-    },
-  ];
+
+  const { tasks} = useTasks()
+
+  const tasksTodo: Task[] = tasks.filter(tasks => tasks.status === "todo") ?? [];
+  const tasksInProgress: Task[] = tasks.filter(tasks => tasks.status === "doing") ?? [];
+  const tasksDone: Task[] = tasks.filter(tasks => tasks.status === "done") ?? [];
 
   return (
     <ScrollArea scrollbars="horizontal">
       <Grid columns="3" gap="4" minWidth="64rem">
         <Flex direction="column" gap="4">
           <Badge size="3" color="gray">
-            Para fazer (2)
+            Para fazer ({tasksTodo.length})
           </Badge>
           {tasksTodo.map((task) => (
             <TaskCard key={task.id} task={task} />
@@ -47,7 +25,7 @@ export const TaskBoard: React.FC = () => {
 
         <Flex direction="column" gap="4">
           <Badge size="3" color="yellow">
-            Em andamento (1)
+            Em andamento ({tasksInProgress.length})
           </Badge>
           {tasksInProgress.map((task) => (
             <TaskCard key={task.id} task={task} />
@@ -56,7 +34,7 @@ export const TaskBoard: React.FC = () => {
 
         <Flex direction="column" gap="4">
           <Badge size="3" color="green">
-            Concluído (1)
+            Concluído ({tasksDone.length})
           </Badge>
           {tasksDone.map((task) => (
             <TaskCard key={task.id} task={task} />

@@ -12,6 +12,7 @@ import {
 } from "@radix-ui/themes";
 import { FormEventHandler } from "react";
 import { z } from "zod";
+import { useTasks } from "../hooks/UseTasks";
 
 //o zod é uma biblioteca para validar dados, aqui eu defino o que é obrigatório e o que não é.
 const CreateTaskSchema = z.object({
@@ -22,6 +23,9 @@ const CreateTaskSchema = z.object({
 });
 
 export const CreateTaskForm: React.FC = () => {
+  
+  const {createTask} = useTasks()
+
   // formEvent é um tipo nativo do react
   const handleSubimit: FormEventHandler<HTMLFormElement> = async (ev) => {
     ev.preventDefault();
@@ -43,7 +47,7 @@ export const CreateTaskForm: React.FC = () => {
       priority,
     });
 
-    alert(JSON.stringify(taskData));
+    await createTask(taskData)
   };
   return (
     <Dialog.Root>

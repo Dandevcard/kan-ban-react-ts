@@ -1,10 +1,12 @@
 import { Badge, Button, Card, Flex, Heading, Text } from "@radix-ui/themes";
 import { Task, TaskPriority, TaskStatus } from "../entities/Tasks";
+import { useTasks } from "../hooks/UseTasks";
 
 interface TaskCardProps {
   task: Task;
 }
 export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+  const { deleteTask, updateTask } = useTasks()
   //função que altera a cor dependendo do momento tbem
   const getActionColor = (status: TaskStatus) => {
     const actionColor: { [key: string]: "indigo" | "green" | "bronze" } = {
@@ -33,6 +35,19 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
     return priorityColor[priority];
   };
 
+  const handleDelete = (id: number) => {
+    const confirmatin = confirm("tem certeza que quer excluir a tarefa ?")
+    if(confirmatin) {
+      deleteTask(id)
+    }
+  }
+  const handleUpdate = () => {
+    if(task.status === "todo") {
+      updateTask(task.id, {status: "doing"})
+    }else if(task.status === "doing") {
+      updateTask(task.id, {status: "done"}   )
+    }
+  }
   return (
     <Card>
       <Flex align="center" gap="4">
@@ -45,11 +60,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
 
       <Flex gap={"2"}>
         {task.status !== "done" && (
-          <Button color={getActionColor(task.status)}>
+          <Button color={getActionColor(task.status)} onClick={handleUpdate}>
             {getActionText(task.status)}
           </Button>
         )}
-        <Button color="red">Excluir</Button>
+        <Button color="red" onClick={()=> handleDelete(task.id)}>Excluir</Button>
       </Flex>
     </Card>
   );
